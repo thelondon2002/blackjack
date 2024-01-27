@@ -45,6 +45,7 @@ class Hand:
         while self.value > 21 and self.aces:
             self.value -= 10
             self.aces -= 1
+            
 
 
 
@@ -52,15 +53,13 @@ class Hand:
 deck = Deck()
 
 
-print("-----------------------------------------------------------------------------------------------------------------")
-print("|                                                                                                               |")
-print("|     B B B      L            A          C C C     K     K       J J J J       A          C C C     K     K     |")
-print("|     B    B     L           A A        C          K   K            J         A A        C          K   K       |")
-print("|     B B B      L          A   A       C          K K              J        A   A       C          K K         |")
-print("|     B    B     L         A A A A      C          K   K            J       A A A A      C          K   K       |")
-print("|     B B B      L L L    A       A      C C C     K     K     J J J       A       A      C C C     K     K     |")
-print("|                                                                                                               |")
-print("-----------------------------------------------------------------------------------------------------------------")
+print("-------------------------------------------------------------------------------------------------------------")
+print("|   B B B      L            A          C C C     K     K       J J J J       A          C C C     K     K   |")
+print("|   B    B     L           A A        C          K   K            J         A A        C          K   K     |")
+print("|   B B B      L          A   A       C          K K              J        A   A       C          K K       |")
+print("|   B    B     L         A A A A      C          K   K            J       A A A A      C          K   K     |")
+print("|   B B B      L L L    A       A      C C C     K     K     J J J       A       A      C C C     K     K   |")
+print("-------------------------------------------------------------------------------------------------------------")
 print("By London Haith\n\n\n")
 
 
@@ -89,62 +88,75 @@ def get_player_action():
             print("Invalid input. Please input either 'hit' or 'stand'.")
 
 def display_partial_dealer_hand(dealer_hand):
-    print("-------------------")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print(f"| {dealer_hand.cards[0].rank} of {dealer_hand.cards[0].suit}      |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|-----------------|")
-    print("Dealer's Hand \n\n")
-
-
-def display_player_hand(player_hand):
-    print("-------------------")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print(f"| {player_hand.cards[0].rank} of {player_hand.cards[0].suit}      |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|-----------------|")
-    print("Player's Hand \n\n")
-
-def display_final_hands(player_hand, final_hand):
-    print("Dealer's Hand: \n")
-    print("-------------------")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    for i, card in enumerate(dealer_hand.cards):
-        print(f"|  {i + 1}: {card.rank} of {card.suit}    |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|                 |")
-    print("|-----------------|\n\n")
-
-    print("Player's Hand: \n")
     print("-----------------")
     print("|               |")
     print("|               |")
+
+    for i, card in enumerate(dealer_hand.cards):
+        print(f"|  Card {i + 1}:      |")
+        print("|               |")
+        print(f"|      {card.rank}        |")
+        print("|               |")
+        print(f"|      of {card.suit}    |")
+        print("|               |")
+        print("|               |")
+
+    print("|---------------|\n")
+    print(f"Total Dealer's Hand: {dealer_hand.value}\n")
+
+
+def display_player_hand(player_hand):
+    print("-----------------")
+    print("|               |")
+    print("|               |")
+
     for i, card in enumerate(player_hand.cards):
-        print(f"|  {i + 1}: {card.rank} of {card.suit}    |")    
+        print(f"|  Card {i + 1}:      |")
+        print("|               |")
+        print(f"|      {card.rank}      |")
+        print("|               |")
+        print(f"|      of {card.suit}    |")
+        print("|               |")
+        print("|               |")
+
+    print("|---------------|\n")
+    print(f"Total Player's Hand: {player_hand.value}\n")
+
+
+def display_final_hands(player_hand, final_hand):
+    print("Dealer's Hand:")
+    print("-----------------")
     print("|               |")
     print("|               |")
+
+    for i, card in enumerate(dealer_hand.cards):
+        print(f"|  Card {i + 1}:      |")
+        print("|               |")
+        print(f"|      {card.rank}        |")
+        print("|               |")
+        print(f"|      of {card.suit}    |")
+        print("|               |")
+        print("|               |")
+
+    print("|---------------|\n")
+    print(f"Total Dealer's Hand: {dealer_hand.value}\n")
+
+    print("Player's Hand:")
+    print("-----------------")
     print("|               |")
     print("|               |")
-    print("|---------------|\n\n")
+
+    for i, card in enumerate(player_hand.cards):
+        print(f"|  Card {i + 1}:      |")
+        print("|               |")
+        print(f"|      {card.rank}          |")
+        print("|               |")
+        print(f"|      of {card.suit}    |")
+        print("|               |")
+        print("|               |")
+
+    print("|---------------|\n")
+    print(f"Total Player's Hand: {player_hand.value}\n")
 
 
 def determine_winner(player_hand, dealer_hand):
@@ -208,9 +220,11 @@ while True:
          player_hand.add_card(deck.cards.pop())
     elif action == 'stand':
          break
+    
+    if player_hand.value > 21:
+                break
 
-
-while dealer_hand.value < 17:
+while dealer_hand.value < player_hand.value:
     dealer_hand.add_card(deck.cards.pop())
 
 
@@ -219,4 +233,3 @@ display_final_hands(player_hand, dealer_hand)
 winner = determine_winner(player_hand, dealer_hand)
 
 display_winner(winner)
-
