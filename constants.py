@@ -5,20 +5,19 @@ import os
 
 display_width = 900
 display_height = 700
-
+pygame.init()
 background_color = (0,110,34)
 grey = (220,220,220)
 black = (0,0,0)
 green = (0, 200, 0)
 red = (255,0,0)
-light_slat = (119,136,153)
-dark_slat = (47, 79, 79)
+light_slat = (255, 255, 255)
+dark_slat = (220,220,220)
 dark_red = (255, 0, 0)
-pygame.init()
 font = pygame.font.SysFont("Arial", 20)
 textfont = pygame.font.SysFont('Comic Sans MS', 35)
 game_end = pygame.font.SysFont('dejavusans', 100)
-blackjack = pygame.font.SysFont('roboto', 70)
+blackjack = pygame.font.SysFont('Arial', 70)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -30,8 +29,7 @@ background_image = pygame.transform.scale(background_image, (display_width, disp
 SUITS = ['C', 'S', 'H', 'D']
 RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 
-CARD_SIZE = (72, 96)
-CARD_CENTER = (36, 48)
-CARD_BACK_SIZE = (72, 96)
-CARD_BACK_CENTER = (36, 48)
+CARD_WIDTH = 100
+CARD_HEIGHT = 120
+
 
