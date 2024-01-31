@@ -133,19 +133,34 @@ class BlackJack:
         self.game_finish(message, 300, 150, color)
         time.sleep(4)
         self.play_or_exit()
+
+    def clear_screen(self):
+        screen.blit(background_image, (0,0))
  
     def play_or_exit(self):
-        game_texts("Play again press Deal!", 200, 80)
-
+        self.clear_screen()
+    
         self.round_in_progress = False
-
         waiting_for_input = True
+
+        game_texts("Click Deal to Play Again!", 450, 300)
+        
         while waiting_for_input:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.exit()
                 elif event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                     waiting_for_input = False
+
+            self.clear_screen()
+            
+            screen_height = screen.get_height()
+            button("Deal", 70, screen_height - 130, 150, 50, light_slat, dark_slat, self.deal)
+            button("Hit", 270, screen_height - 130, 150, 50, light_slat, dark_slat, self.hit)
+            button("Stand", 470, screen_height - 130, 150, 50, light_slat, dark_slat, self.stand)
+            button("EXIT", 670, screen_height - 130, 150, 50, light_slat, dark_red, self.exit)
+
+            pygame.display.update()
 
         self.player.value = 0
         self.dealer.value = 0
@@ -172,9 +187,9 @@ class BlackJack:
         if self.dealer.value == 21:
             
             show_hidden_card = pygame.image.load(image_path_reveal).convert()
-            card_width = int(show_hidden_card.get_width() * 0.3)
-            card_height = int(show_hidden_card.get_height() * 0.3)
-            screen.blit(show_hidden_card, (30 + card_width + 10, 100))
+            card_width = int(show_hidden_card.get_width() * 0.5)
+            card_height = int(show_hidden_card.get_height() * 0.5)
+            screen.blit(show_hidden_card, (30 + card_width + 10, 200))
             black_jack("Dealer has Blackjack!", 400, 150, red)
             time.sleep(4)
             self.play_or_exit()
@@ -182,17 +197,17 @@ class BlackJack:
             
             show_hidden_card = pygame.image.load(image_path_hidden).convert()
             show_hidden_card = pygame.transform.scale(show_hidden_card, (CARD_WIDTH, CARD_HEIGHT))
-            card_width = int(show_hidden_card.get_width() * 0.3)
-            card_height = int(show_hidden_card.get_height() * 0.3)
-            screen.blit(show_hidden_card, (30, 100))
+            card_width = int(show_hidden_card.get_width() * 0.5)
+            card_height = int(show_hidden_card.get_height() * 0.5)
+            screen.blit(show_hidden_card, (30, 200))
 
         if self.player.value == 21 and self.dealer.value == 21:
-            screen.blit(show_hidden_card, (400, 100))
+            screen.blit(show_hidden_card, (400, 200))
             black_jack("Both with BlackJack!", 400, 150, grey)
             time.sleep(4)
             self.play_or_exit()
         elif self.player.value == 21:
-            screen.blit(show_dealer_card, (400, 100))
+            screen.blit(show_dealer_card, (400, 200))
             black_jack("You got BlackJack!", 400, 150, green)
             time.sleep(4)
             self.play_or_exit()
@@ -205,8 +220,10 @@ class BlackJack:
         if not self.round_in_progress:
             if not self.dealer.card_img:
                 back_card = pygame.image.load(os.path.join(script_dir, 'img', 'back.png')).convert()
-                back_card = pygame.transform.scale(back_card, (int(back_card.get_width() * 0.2), int(back_card.get_height() * 0.2)))
-                screen.blit(back_card, (30, 100))
+                back_card = pygame.transform.scale(back_card, (CARD_WIDTH , CARD_HEIGHT))
+                screen.blit(back_card, (30, 200))
+                pygame.display.update()
+            
 
             for i in range(2):
                 self.dealer.add_card(self.deck.deal())
@@ -218,31 +235,38 @@ class BlackJack:
             self.round_in_progress = True
             self.deal_occurred = True
 
-            game_texts("The Dealer's hand:", 150, 30)
-            game_texts("The Player's hand:", 700, 30)
+
+            game_texts("The Dealer's Hand:", 180, 70)
+            game_texts("The Player's Hand:", 690, 70)
 
 
             for i in range(2):
-                card_value, card_suit = self.dealer.card_img[i]
-                image_path = os.path.join(script_dir, 'img', f'{card_value}{card_suit}.png')
-                dealer_card = pygame.image.load(os.path.join(script_dir, 'img', f'{card_value}{card_suit}.png')).convert()
-                dealer_card = pygame.transform.scale(dealer_card, (CARD_WIDTH, CARD_HEIGHT))
-                screen.blit(dealer_card, (30 + i * (CARD_WIDTH + 10), 100))
+                if i == 0:
+                    back_card = pygame.image.load(os.path.join(script_dir, 'img', 'back.png')).convert()
+                    back_card = pygame.transform.scale(back_card, (CARD_WIDTH , CARD_HEIGHT))
+                    screen.blit(back_card, (30 + i * (CARD_WIDTH + 10), 200))
+
+                else:
+                    card_value, card_suit = self.dealer.card_img[i]
+                    dealer_card = pygame.image.load(os.path.join(script_dir, 'img', f'{card_value}{card_suit}.png')).convert()
+                    dealer_card = pygame.transform.scale(dealer_card, (CARD_WIDTH, CARD_HEIGHT))
+                    screen.blit(dealer_card, (30 + i * (CARD_WIDTH + 10), 200))
 
                 player_card_value, player_card_suit = self.player.card_img[i]
                 player_card = pygame.image.load(os.path.join(script_dir, 'img', f'{player_card_value}{player_card_suit}.png')).convert()
                 image_path = os.path.join(script_dir, 'img', f'{player_card_value}{player_card_suit}.png')
                 player_card = pygame.transform.scale(player_card, (CARD_WIDTH, CARD_HEIGHT))
-                screen.blit(player_card, (display_width - 250 + i * (CARD_WIDTH + 10), 100))
-    
+                screen.blit(player_card, (display_width - 250 + i * (CARD_WIDTH + 10), 200))
+
             
             pygame.display.update()
+        
+        pygame.display.update()
 
             
 
     def hit(self):
         if self.round_in_progress:
-
             if self.player.value <= 21:
                 new_card = self.deck.deal()
                 self.player.add_card(new_card)
@@ -251,16 +275,22 @@ class BlackJack:
                 card_value, card_suit = new_card
                 player_card = pygame.image.load(os.path.join(script_dir, 'img', f'{card_value}{card_suit}.png')).convert_alpha()
                 player_card = pygame.transform.scale(player_card, (CARD_WIDTH, CARD_HEIGHT))
-                screen.blit(player_card, (display_width - 250 + len(self.player.cards) * (CARD_WIDTH + 10), 100))
+                screen.blit(player_card, (display_width - 250 + len(self.player.cards) * (CARD_WIDTH + 10), 200))
 
                 pygame.display.update()
 
+                for i, card_img in enumerate(self.player.card_img):
+                    player_card_value, player_card_suit = card_img
+                    player_card = pygame.image.load(os.path.join(script_dir, 'img', f'{player_card_value}{player_card_suit}.png')).convert()
+                    player_card = pygame.transform.scale(player_card, (CARD_WIDTH, CARD_HEIGHT))
+                    screen.blit(player_card, (display_width - 250 + i * (CARD_WIDTH + 10), 200))
+                    
+                pygame.display.update()
+
                 if self.player.value > 21:
-                    game_finish("You Busted!", 300, 150, red)
+                    game_finish("You Busted!", 450, 350, red)
                     time.sleep(4)
                     self.play_or_exit()
-                else:
-                    self.end_round()
     
     def stand(self):
         card_value, card_suit = self.dealer.card_img[1]
@@ -270,13 +300,13 @@ class BlackJack:
             dealer_card_value, dealer_card_suit = card_img
             dealer_card = pygame.image.load(os.path.join(script_dir, 'img', f'{dealer_card_value}{dealer_card_suit}.png')).convert()
             dealer_card = pygame.transform.scale(dealer_card, (CARD_WIDTH, CARD_HEIGHT))
-            screen.blit(dealer_card, (30 + i * (CARD_WIDTH + 10), 100))
+            screen.blit(dealer_card, (30 + i * (CARD_WIDTH + 10), 200))
   
         for i, card_img in enumerate(self.player.card_img[:2]):
             player_card_value, player_card_suit = card_img
             player_card = pygame.image.load(os.path.join(script_dir, 'img', f'{player_card_value}{player_card_suit}.png')).convert()
             player_card = pygame.transform.scale(player_card, (CARD_WIDTH, CARD_HEIGHT))
-            screen.blit(player_card, (display_width - 250 + i * (CARD_WIDTH + 10), 100))
+            screen.blit(player_card, (display_width - 250 + i * (CARD_WIDTH + 10), 200))
   
         pygame.display.update()
 
@@ -284,11 +314,11 @@ class BlackJack:
         self.player.calc_hand()
 
         if self.player.value > self.dealer.value:
-            game_finish("You Won!", 500, 300, green)
+            game_finish("You Won!", 450, 350, green)
         elif self.player.value < self.dealer.value:
-            game_finish("Dealer Wins!", 500, 300, red)
+            game_finish("Dealer Wins!", 450, 350, red)
         else:
-            game_finish("It's a Tie!", 500, 300, grey)
+            game_finish("It's a Tie!", 450, 350, grey)
 
         time.sleep(4)
         self.play_or_exit()
@@ -300,7 +330,7 @@ class BlackJack:
     
 
     screen.fill(background_color)
-    pygame.draw.rect(screen, grey, pygame.Rect(0, 0, 250, 700))
+    pygame.draw.rect(screen, background_color, pygame.Rect(0, 0, 250, 700))
     pygame.display.update()
 
         
@@ -330,40 +360,27 @@ waiting_for_input = True
 screen_height = screen.get_height()
 deal_button_clicked = False
 
-while running:            
+screen.blit(background_image, (0,0))
 
+while running:
+                    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 play_blackjack.exit()
+        
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
 
-        screen_height = screen.get_height()
-
-        if waiting_for_input:
-            mouse = pygame.mouse.get_pos()
-            click = pygame.mouse.get_pressed()
-            if 70 < mouse[0] < 220 and screen_height - 130 < mouse[1] < screen_height - 80:
-                if click[0] == 1:
-                    play_blackjack.deal()
-            elif 270 < mouse[0] < 420 and screen_height - 130 < mouse[1] < screen_height - 80:
-                if click[0] == 1:
-                    play_blackjack.hit()
-            elif 470 < mouse[0] < 620 and screen_height - 130 < mouse[1] < screen_height - 80:
-                if click[0] == 1:
-                    play_blackjack.stand()
-            elif 670 < mouse[0] < 820 and screen_height - 130 < mouse[1] < screen_height - 80:
-                if click[0] == 1:
-                    play_blackjack.exit()
-
-        if play_blackjack.deal_occurred:
-            play_blackjack.dealer.display_cards()
-            play_blackjack.player.display_cards()
-
+        
         button("Deal", 70, screen_height - 130, 150, 50, light_slat, dark_slat, play_blackjack.deal)
         button("Hit", 270, screen_height - 130, 150, 50, light_slat, dark_slat, play_blackjack.hit)
         button("Stand", 470, screen_height - 130, 150, 50, light_slat, dark_slat, play_blackjack.stand)
         button("EXIT", 670, screen_height - 130, 150, 50, light_slat, dark_red, play_blackjack.exit)
 
+        if play_blackjack.deal_occurred:
+            play_blackjack.dealer.display_cards()
+            play_blackjack.player.display_cards()
+
 
         pygame.display.update()
         clock.tick(FPS)
-
